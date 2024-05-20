@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  flask:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DATABASE_URL: ${DATABASE_URL}
+      CLIENT_URL: ${CLIENT_URL}
+    env_file:
+      - .env
+    networks:
+      - chat-network
+
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - chat-network
+
+networks:
+  chat-network:
+
+volumes:
+  postgres_data:
